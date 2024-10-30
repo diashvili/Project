@@ -26,25 +26,32 @@ public class PostRepository : IPostRepository
         return await _context.Posts.Where(p => p.UserId == userId).ToListAsync();
     }
 
-    public async Task AddPostAsync(Post post)
+    public async Task<Post> CreatePostAsync(Post post)
     {
         await _context.Posts.AddAsync(post);
         await _context.SaveChangesAsync();
+        return post;
     }
 
-    public async Task UpdatePostAsync(Post post)
+    public async Task<Post> UpdatePostAsync(int id, Post post)
     {
+        var existingPost = await GetPostByIdAsync(id);
+        if (existingPost == null) return null;
+
+        existingPost.Content = post.Content;
+        existingPost.Title = post.Title;
         _context.Posts.Update(post);
         await _context.SaveChangesAsync();
+        return existingPost;
     }
 
-    public async Task DeletePostAsync(int id)
+    public async Task<bool> DeletePostAsync(int id)
     {
         var post = await GetPostByIdAsync(id);
-        if (post != null)
-        {
-            _context.Posts.Remove(post);
-            await _context.SaveChangesAsync();
-        }
+        if (post == null) return false;
+        
+        post.IsDeleted = 1;
+        await _context.SaveChangesAsync(); 
+        return true;
     }
 }

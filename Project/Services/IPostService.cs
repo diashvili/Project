@@ -1,7 +1,8 @@
 ﻿using Project.Models;
 
-namespace Project.Repositories;
-public interface IPostRepository
+namespace Project.Services;
+
+public interface IPostService
 {
     Task<IEnumerable<Post>> GetAllPostsAsync();
     Task<Post> GetPostByIdAsync(int id);

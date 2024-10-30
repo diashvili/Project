@@ -10,11 +10,6 @@ namespace Project
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //     optionsBuilder.UseSqlServer("Server=iashka;Database=Project;Integrated Security=True;TrustServerCertificate=True;");
-        // }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -24,8 +19,10 @@ namespace Project
                 .WithMany(u => u.Posts)
                 .HasForeignKey(p => p.UserId);
 
-            //modelBuilder.Entity<User>().HasData(new User { UserId = 1, Name = "data", Email = "data@gmail.com" });
-            //modelBuilder.Entity<Post>().HasData(new Post { PostId = 1, Title = "Hello World", Content = "First post", UserId = 1 });
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Posts)
+                .WithOne(p => p.User)
+                .HasForeignKey(p => p.UserId);
         }
     }
 }

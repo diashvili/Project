@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Project.Models;
 
 namespace Project.Repositories;
@@ -23,28 +24,36 @@ public class UserRepository : IUserRepository
 
     public async Task<User> GetUserByEmailAsync(string email)
     {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        return await _context.Users
+            .FirstOrDefaultAsync(u => EF.Functions.Like(u.Email, $"%{email}%"));
     }
 
-    public async Task AddUserAsync(User user)
+    public async Task<User> CreateUserAsync(User user)
     {
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
+        return user;
     }
 
-    public async Task UpdateUserAsync(User user)
+    public async Task<User> UpdateUserAsync(int id, User user)
     {
+        var existingUser = await GetUserByIdAsync(id);
+        if (existingUser == null) return null;
+
+        existingUser.Name = user.Name;
+        existingUser.Email = user.Email;
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
+        return existingUser;
     }
 
-    public async Task DeleteUserAsync(int id)
+    public async Task<bool> DeleteUserAsync(int id)
     {
         var user = await GetUserByIdAsync(id);
-        if (user != null)
-        {
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-        }
+        if (user == null) return false;
+
+        user.IsDeleted = 1;
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

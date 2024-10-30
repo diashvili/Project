@@ -1,7 +1,8 @@
 ﻿using Project.Models;
 
-namespace Project.Repositories;
-public interface IUserRepository
+namespace Project.Services;
+
+public interface IUserService
 {
     Task<IEnumerable<User>> GetAllUsersAsync();
     Task<User> GetUserByIdAsync(int id);
