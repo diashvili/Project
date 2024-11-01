@@ -38,11 +38,11 @@ public class UserRepository : IUserRepository
     public async Task<User> UpdateUserAsync(int id, User user)
     {
         var existingUser = await GetUserByIdAsync(id);
-        if (existingUser == null) return null;
+        if (existingUser == null || existingUser.IsDeleted == 1 ) return null;
 
         existingUser.Name = user.Name;
         existingUser.Email = user.Email;
-        _context.Users.Update(user);
+        _context.Users.Update(existingUser);
         await _context.SaveChangesAsync();
         return existingUser;
     }

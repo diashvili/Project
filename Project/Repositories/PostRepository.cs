@@ -40,7 +40,7 @@ public class PostRepository : IPostRepository
 
         existingPost.Content = post.Content;
         existingPost.Title = post.Title;
-        _context.Posts.Update(post);
+        _context.Posts.Update(existingPost);
         await _context.SaveChangesAsync();
         return existingPost;
     }

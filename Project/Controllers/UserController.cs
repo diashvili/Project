@@ -3,7 +3,8 @@ using Project.Models;
 using Project.Services;
 
 namespace Project.Controllers;
-
+[ApiController]
+[Route("api/users")]
 public class UserController : BaseController
 {
     private readonly IUserService _userService;
@@ -49,7 +50,7 @@ public class UserController : BaseController
         return NoContent();
     }
 
-    [HttpGet]
+    [HttpGet("by-email/{email}")]
     public async Task<IActionResult> GetUserByEmailAsync(string email)
     {
         var user = await _userService.GetUserByEmailAsync(email);

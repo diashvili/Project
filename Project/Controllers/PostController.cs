@@ -3,7 +3,8 @@ using Project.Models;
 using Project.Services;
 
 namespace Project.Controllers;
-
+[ApiController]
+[Route("api/posts")]
 public class PostController : BaseController
 {
     private readonly IPostService _postService;
@@ -48,6 +49,7 @@ public class PostController : BaseController
         if (!success) return NotFound();
         return NoContent();
     }
+    [HttpGet("user/{userId}")]
     public async Task<IActionResult> GetPostsByUserIdAsync(int userId)
     {
         var posts = await _postService.GetPostsByUserIdAsync(userId);
